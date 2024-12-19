@@ -3,7 +3,6 @@
 subcomponents to impliment:
 map container
 
-
 */
 import React from 'react';
 import { useState } from 'react';
@@ -23,10 +22,17 @@ import { useRouter } from 'expo-router';
 //import { dismiss } from 'expo-router/build/global-state/routing';
 //import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import LocReview from './LocReview';
 
-const INDEX = () => {
+const INDEX: React.FC = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
+
 
   const [searchQuery, setSearchQuery] = useState('');
   const recommendations = [
@@ -75,10 +81,7 @@ const INDEX = () => {
                 <TouchableOpacity 
                   style={{alignItems: "center", justifyContent: "center"}}
                   onPress={() => {
-                    router.push({
-                      pathname: "/activityPAGES/screens/LocReview",
-                      params: {String: item.keyID}
-                    });
+                    openModal();
                   }}
                 >
                   <View style={styles.innerButton_recommendation}>
@@ -87,6 +90,7 @@ const INDEX = () => {
                     </Text>
                   </View>
                 </TouchableOpacity>
+                <LocReview isVisible={isModalVisible} onClose={closeModal}/>
               </View>
             )}
             style={styles.recommendationList}

@@ -11,11 +11,13 @@ export default function layout() {
       <Stack.Screen 
         name="screens/LocReview"
         options={{ 
-          presentation: 'modal',
           headerShown: false,
           headerTitle: "",
         }}
        />
+      <Stack.Screen
+        name="commentContainer"
+      />
     </Stack>
   );
 }

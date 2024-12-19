@@ -24,9 +24,9 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}>
       <Tabs.Screen
-        name="index"
+        name="homeFeedContainer"
         options={{
-          title: 'Tab One',
+          title: 'HOME',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -45,10 +45,18 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="activityPAGES"
+        name="activityPagesComponents"
         options={{
           headerShown: false,
-          title: 'Tab Two',
+          title: 'PLAY',
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="userStatContainer"
+        options={{
+          headerShown: false,
+          title: 'YOU',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />

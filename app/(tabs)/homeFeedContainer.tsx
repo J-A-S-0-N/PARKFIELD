@@ -1,22 +1,27 @@
+//this returns the HomeFeed to the 
 import React from 'react';
 
 import { StyleSheet } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+//import EditScreenInfo from '@/components/EditScreenInfo';
+import { View } from '@/components/Themed';
 import { TouchableOpacity } from 'react-native';
 
-import HOME from '@/components/homeFeed';
+import HomeFeedINDEX from '@/components/HomeFeedComponent/homeFeed';
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
+      {/*
       <TouchableOpacity
         activeOpacity={0.93}
         onPress={() => console.log("pressed")}
       >
-        <Text>working...</Text>
+      */}
+      <HomeFeedINDEX/>
+      {/*
       </TouchableOpacity>
+      */}
     </View>
   );
 }

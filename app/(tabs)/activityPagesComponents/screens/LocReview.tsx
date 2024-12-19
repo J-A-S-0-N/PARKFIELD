@@ -1,38 +1,57 @@
 /*
+
 subcomponents to impliment:
 map container
+
 */
 
 //import { useRouter } from 'expo-router';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal } from 'react-native';
+
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+
+import Modal from 'react-native-modal';
 import { useSearchParams } from 'expo-router/build/hooks';
 import { useRouter } from 'expo-router/build/hooks';
+
+
+const {WINwidth, WINheight} = Dimensions.get('window');
 
 type pararmVariable = {
   locationName: string,
   keyID: string,
-}
+};
 
-const LocReview = () => {
+type modalProp = {
+  isVisible: boolean,
+  onClose: () => void
+};
+
+const LocReview: React.FC<modalProp> = ({ isVisible, onClose }) => {
+
   const router = useRouter();
   //touch functions
   const backButton = () => {
     router.back()
   };
-
   const confirmButton = () => {
     //router.push();
   };
-
   //const router = useRouter(); 
+  // dont work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const PARAMS = useSearchParams() as unknown as pararmVariable;
   const {locationName, keyID} = PARAMS;
   console.log(locationName);
   console.log(keyID);
+  // dont work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   return (
-    <View style={styles.modalContainer}>
+    <Modal
+      isVisible={isVisible}
+      onBackdropPress={onClose}
+      backdropColor='rgba(0,0,0,0.7)'
+      style={styles.modalContainer}
+    >
       <View style={styles.modalContent}>
         {/*map section???*/}
         <View style={styles.mapContainer}>
@@ -79,7 +98,7 @@ const LocReview = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </Modal>
   );
 };
 
@@ -87,17 +106,11 @@ const styles = StyleSheet.create({
   //Container
   modalContainer: {
     flex:1,
-    justifyContent: 'center',
-    alignItems: "center",
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    width: 599,
+    justifyContent: "flex-end",
   },
   modalContent: {
-    height: 200,
-  },
-  container: {
-    height: 10,
-    flex: 1,
-    paddingHorizontal: 10,
+    backgroundColor:"black",
   },
   header: {
     justifyContent: "center",
@@ -105,7 +118,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   mapContainer: {
-    backgroundColor: "black", //temp value change later
+    backgroundColor: "black",
     flex: 1,
     height: 40
   },

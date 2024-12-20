@@ -14,7 +14,7 @@ function TabBarIcon(props: {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
-export default function TabLayout() {
+export default function mainLayoutRouter() {
   const colorScheme = useColorScheme();
 
   return (
@@ -24,10 +24,10 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}>
       <Tabs.Screen
-        name="index"
+        name="homeFeedContainer"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'HOME',
+          //tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -45,11 +45,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="activityPAGES"
+        name="activityPagesComponents"
         options={{
           headerShown: false,
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'PLAY',
+          //tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="userStatContainer"
+        options={{
+          headerShown: false,
+          title: 'YOU',
+          //tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
     </Tabs>

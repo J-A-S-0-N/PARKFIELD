@@ -5,19 +5,18 @@ export default function layout() {
   return (
     <Stack>
       <Stack.Screen 
-        name="screens/index"
+        name="screens"
         options={{ headerShown: false }}
        />
+      {/*
       <Stack.Screen 
         name="screens/LocReview"
         options={{ 
           headerShown: false,
-          headerTitle: "",
+          //headerTitle: "",
         }}
        />
-      <Stack.Screen
-        name="commentContainer"
-      />
+      */}
     </Stack>
   );
 }

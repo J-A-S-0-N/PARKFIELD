@@ -9,19 +9,10 @@ import { TouchableOpacity } from 'react-native';
 
 import HomeFeedINDEX from '@/components/HomeFeedComponent/homeFeed';
 
-export default function TabOneScreen() {
+export default function homeContainer() {
   return (
     <View style={styles.container}>
-      {/*
-      <TouchableOpacity
-        activeOpacity={0.93}
-        onPress={() => console.log("pressed")}
-      >
-      */}
       <HomeFeedINDEX/>
-      {/*
-      </TouchableOpacity>
-      */}
     </View>
   );
 }

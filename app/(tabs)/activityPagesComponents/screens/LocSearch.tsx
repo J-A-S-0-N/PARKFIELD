@@ -24,7 +24,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LocReview from './LocReview';
 
-const INDEX: React.FC = () => {
+const LocSearch: React.FC = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -201,4 +201,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default INDEX;
+export default LocSearch;

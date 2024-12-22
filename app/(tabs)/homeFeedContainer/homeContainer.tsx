@@ -1,18 +1,15 @@
-//this returns the HomeFeed to the 
 import React from 'react';
 
 import { StyleSheet } from 'react-native';
-
-//import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
-import { TouchableOpacity } from 'react-native';
-
 import HomeFeedINDEX from '@/components/HomeFeedComponent/homeFeed';
+import { useRouter } from 'expo-router';
 
 export default function homeContainer() {
+  const router = useRouter();
   return (
     <View style={styles.container}>
-      <HomeFeedINDEX/>
+      <HomeFeedINDEX router={router}/>
     </View>
   );
 }

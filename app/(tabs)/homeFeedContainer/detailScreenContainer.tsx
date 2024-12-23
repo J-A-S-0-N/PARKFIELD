@@ -1,11 +1,11 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import CommentScreen from "@/components/HomecommentComponents/comment";
+import HomeDetailScreen from "@/components/HomedetailScreenComponent/detailScreen";
 
-export default function commentContainer() {
+export default function detailScreenContainer(){
   return (
     <View style={styles.container}>
-      <CommentScreen></CommentScreen>
+      <HomeDetailScreen></HomeDetailScreen>
     </View>
   );
 }

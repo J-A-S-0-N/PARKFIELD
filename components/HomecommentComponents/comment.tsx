@@ -74,28 +74,16 @@ export default function CommentScreen(){
                 </View>
                 <View style={styles.bodyStatContainer}>
                   <View>
-                    <Text style={styles.statTextStyle}>
-                      타수: 
-                    </Text>
-                    <Text style={styles.statValueStyle}>
-                      {hit}
-                    </Text>
+                    <Text style={styles.statTextStyle}>타수: </Text>
+                    <Text style={styles.statValueStyle}>{hit}</Text>
                   </View>
                   <View>
-                    <Text style={styles.statTextStyle}>
-                      걸음수: 
-                    </Text>
-                    <Text style={styles.statValueStyle}>
-                      {step}
-                    </Text>
+                    <Text style={styles.statTextStyle}>걸음수: </Text>
+                    <Text style={styles.statValueStyle}>{step}</Text>
                   </View>
                   <View>
-                    <Text style={styles.statTextStyle}>
-                      총시간:
-                    </Text>
-                    <Text style={styles.statValueStyle}>
-                      {totalTime}
-                    </Text>
+                    <Text style={styles.statTextStyle}>총시간:</Text>
+                    <Text style={styles.statValueStyle}>{totalTime}</Text>
                   </View>
                 </View>
               </View>

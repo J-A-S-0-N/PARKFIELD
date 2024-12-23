@@ -212,7 +212,12 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
 
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => console.log("route")}>
+            onPress={() => 
+              router.push({
+                pathname: "/homeFeedContainer/detailScreenContainer",
+              })
+            }
+          >
             {/* username/time header*/}
             <View style={[styles.headerCOMP, styles.childPadding]}>
               <View style={styles.usernameContainer}>

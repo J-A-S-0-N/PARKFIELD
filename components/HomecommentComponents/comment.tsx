@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSearchParams } from 'expo-router/build/hooks';
 
 import {
@@ -30,6 +30,12 @@ const comments = [
 
 
 export default function CommentScreen(){
+  const scrollViewRef = useRef<ScrollView | null>(null);
+
+  const handleKeyboardShow = () => {
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  };
+
   const renderItem = ({ item }: { item: { name: string; message: string } }) => (
     <View style={styles.commentContainer}>
       <Text style={styles.name}>{item.name}</Text>
@@ -50,65 +56,65 @@ export default function CommentScreen(){
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 70}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.innerContainer}>
-          {/* Main content area */}
-          <View style={styles.mainContent}>
-            <ScrollView
-              onScrollBeginDrag={Keyboard.dismiss} 
-            >
-              {/* Header area */}
-              <View style={styles.userHeader}>
-                <Text style={styles.userTextStyle}>
-                  {user}
+      <View style={styles.innerContainer}>
+        {/* Main content area */}
+        <View style={styles.mainContent}>
+          <ScrollView
+            ref={scrollViewRef}
+            onScrollBeginDrag={Keyboard.dismiss} 
+          >
+            {/* Header area */}
+            <View style={styles.userHeader}>
+              <Text style={styles.userTextStyle}>
+                {user}
+              </Text>
+            </View>
+            {/*body text area*/}
+            <View style={styles.bodyContainer}>
+              <View style={styles.bodyTitleContainer}>
+                <Text style={styles.titleTextStyle}>
+                  {title || "error: no title fetched"}
                 </Text>
               </View>
-              {/*body text area*/}
-              <View style={styles.bodyContainer}>
-                <View style={styles.bodyTitleContainer}>
-                  <Text style={styles.titleTextStyle}>
-                    {title || "error: no title fetched"}
-                  </Text>
+              <View style={styles.bodyStatContainer}>
+                <View>
+                  <Text style={styles.statTextStyle}>타수: </Text>
+                  <Text style={styles.statValueStyle}>{hit}</Text>
                 </View>
-                <View style={styles.bodyStatContainer}>
-                  <View>
-                    <Text style={styles.statTextStyle}>타수: </Text>
-                    <Text style={styles.statValueStyle}>{hit}</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.statTextStyle}>걸음수: </Text>
-                    <Text style={styles.statValueStyle}>{step}</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.statTextStyle}>총시간:</Text>
-                    <Text style={styles.statValueStyle}>{totalTime}</Text>
-                  </View>
+                <View>
+                  <Text style={styles.statTextStyle}>걸음수: </Text>
+                  <Text style={styles.statValueStyle}>{step}</Text>
+                </View>
+                <View>
+                  <Text style={styles.statTextStyle}>총시간:</Text>
+                  <Text style={styles.statValueStyle}>{totalTime}</Text>
                 </View>
               </View>
-              {/*main comments goes here*/}
-              <View style={styles.listContainer}>
-                {comments.map((item) => (
-                  <View key={item.id} style={styles.commentContainer}>
-                    <Text style={styles.name}>{item.name}</Text>
-                    <Text style={styles.message}>{item.message}</Text>
-                  </View>
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-
-          {/* Text box at the bottom */}
-          <View style={styles.bottomInputContainer}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="댓글 입력..."
-              placeholderTextColor="#aaa"
-            />
-          </View>
+            </View>
+            {/*main comments goes here*/}
+            <View style={styles.listContainer}>
+              {comments.map((item) => (
+                <View key={item.id} style={styles.commentContainer}>
+                  <Text style={styles.name}>{item.name}</Text>
+                  <Text style={styles.message}>{item.message}</Text>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
         </View>
-      </TouchableWithoutFeedback>
+
+        {/* Text box at the bottom */}
+        <View style={styles.bottomInputContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="댓글 입력..."
+            placeholderTextColor="#aaa"
+            onFocus={handleKeyboardShow}
+          />
+        </View>
+      </View>
     </KeyboardAvoidingView>
   );
 
@@ -123,11 +129,12 @@ const styles= StyleSheet.create({
     justifyContent: "flex-end", 
   },
   mainContent: {
-    marginHorizontal: 20,
-    marginVertical: 20,
+    //dont use paddingVertical itll leave a gap between input box and list
+    paddingHorizontal: 10,
     flex: 1,
   },
   bodyContainer:{
+    padding: 15,
     flexDirection: "column",
   },
   bodyStatContainer: {
@@ -136,7 +143,7 @@ const styles= StyleSheet.create({
     justifyContent: "space-between",
   },
   bodyTitleContainer: {
-    marginBottom: 10,
+    marginBottom: 25,
   },
 
   bottomInputContainer: {
@@ -156,7 +163,7 @@ const styles= StyleSheet.create({
   },
 
   userHeader: {
-    paddingBottom: 10,
+    padding: 10,
   },
   textBoxContainer: {
     height: 40,
@@ -188,7 +195,7 @@ const styles= StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1,
     elevation: 2,
-*/
+    */
   },
   name: {
     fontWeight: "bold",

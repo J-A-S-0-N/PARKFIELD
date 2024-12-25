@@ -6,7 +6,9 @@ import { FlatList,
   ActivityIndicator, 
   StyleSheet, 
   Image,
-  TouchableOpacity } from "react-native";
+  TouchableOpacity, 
+  PlatformColor,
+  TextStyle} from "react-native";
 
 import { collection, 
   query, 
@@ -15,9 +17,12 @@ import { collection,
   getDocs,
   startAfter, 
   doc, 
-  where} from "firebase/firestore";
+  updateDoc,
+  arrayUnion,
+  arrayRemove} from "firebase/firestore";
 import { useRouter } from 'expo-router';
 import { Router } from "expo-router";
+import { PostText } from "./likeStyle";
 
 import { db } from "@/services/firebaseConfig";
 
@@ -38,10 +43,26 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
     CommentTime: string;
   };
 
+  interface Post {
+    id: string;
+    LikeCount: number;
+    UserName: string;
+    Title: string;
+    SubTitle: string;
+    Time: string;
+    HitCount: string;
+    Steps: number;
+    TotalTime: string;
+  };
+
+
+  const [postData, setPostData] = useState<Post[]>([]); 
+  /*
   const [postData, setPostData] = useState([{
-    LikeCount: 0,UserName: "",Title: "",SubTitle: "",
+    id: "", LikeCount: 0,UserName: "",Title: "",SubTitle: "",
     Time: "",HitCount: "",Steps: 0,TotalTime: "",
   }]);
+  */
   const [commentData, setCommentData] = useState([{
     CommentUser: "",
     CommentBodyText: "",
@@ -52,12 +73,11 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
     //this is solely for testing make sure to dis-engage this in the useeffect function
     setPostData([
       {
+        id: "oPdQyTnMW3VpBLGNaho5",
         LikeCount: 42,
         UserName: "JohnDoe",
         Title: "Learning React",
         SubTitle: "React Hooks 시작하기: Hooks는 React의 강력한 추가 기능으로, 클래스 없이 상태 및 다른 React 기능을 사용할 수 있게 해줍니다. 이 가이드는 useState와 useEffect를 포함한 Hooks의 기본을 다루며, 이를 React 애플리케이션에 실용적인 예제와 모범 사례를 통해 어떻게 통합할 수 있는지 보여줍니다. Hooks는 상태 관리와 컴포넌트 간 로직 공유를 단순화하여, 코드를 더 깔끔하고 유지보수하기 쉽게 만듭니다.",
-
-
         //Time: "2024-12-20T10:00:00Z",
         Time: "6월7일, 2025 3:12PM",
         HitCount: "16/24",
@@ -65,6 +85,7 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
         TotalTime: "2:12",
       },
       {
+        id: "testid",
         LikeCount: 67,
         UserName: "JaneSmith",
         Title: "Advanced React",
@@ -78,6 +99,7 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
         TotalTime: "1:02",
       },
       {
+        id: "thridId",
         LikeCount: 12,
         UserName: "CodeMaster",
         Title: "React Native Tips",
@@ -91,13 +113,16 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
     ]);
   };
 
-
   const [posts, setPosts] = useState<any[]>([]);
   const [lastVisible, setLastVisible] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const reserveFetchPost = async (loadMore = false) => {
+  // states that controls styles
+  const [likeTextColor, setlikeColor] = useState("black");
+  const [likeFontFamily, setlikeFontFamily] = useState("400");
+
+  const FetchHomePosts = async (loadMore = false) => {
     setLoading(true);
 
     const subcollectionName = "NULL";
@@ -111,11 +136,11 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
       const querySnapshot = await getDocs(collectionRef);
       if (!querySnapshot.empty){
         for(const postDoc of querySnapshot.docs){
-          console.log("${postDoc.id}");
-          console.log(postDoc.data());
           //here goes the function that passes the values to the states (without comments)
+          console.log(postDoc.id);
           setPostData((prevData) => {
             return [...prevData, {
+              id: postDoc.id,
               LikeCount: postDoc.data().LikeCount,
               UserName: postDoc.data().Name,
               Title: postDoc.data().Title,
@@ -193,9 +218,44 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
     setLoading(false);
   };
 
+  const toggleLikeFunction = async(PostUid: string) => {
+    console.log("toggled like function...");
+    const userId = "J4S0N";
+    if (likeTextColor === "#5BB7FF"){
+      setlikeFontFamily("400");
+      setlikeColor("black");
+    }else {
+      setlikeFontFamily("800");
+      setlikeColor("#5BB7FF");
+    }
+
+    const postRef = doc(db, "POSTS", PostUid);
+    const postSnapshot = await getDoc(postRef);
+
+    try {
+        if (!postSnapshot.exists()) {
+            console.log("not existing snapshot");
+            return;
+        }
+        const post = postSnapshot.data();
+        const likeUser = post.likeUsers || [];
+
+        if (likeUser.includes(userId)) {
+            await updateDoc(postRef, {
+                likeUsers: arrayRemove(userId)
+            });
+        } else {
+            await updateDoc(postRef, {
+                likeUsers: arrayUnion(userId)
+            });
+        }
+    } catch (error) {
+        console.log("Error: {}", error);
+    }
+   };
+
   useEffect(() => {
-    //reserveFetchPost();
-    initTestData();
+    FetchHomePosts();
   }, []);
 
   const renderFooter = () => {
@@ -206,18 +266,16 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
   return (
     <FlatList
       data={postData}
-      keyExtractor={(item) => item.Title}
+      keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <View style={styles.container}>
-
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => 
               router.push({
                 pathname: "/homeFeedContainer/detailScreenContainer",
               })
-            }
-          >
+            }>
             {/* username/time header*/}
             <View style={[styles.headerCOMP, styles.childPadding]}>
               <View style={styles.usernameContainer}>
@@ -275,10 +333,16 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
 
 
           <View style= {[styles.likecommentButtonContainer, styles.childPadding]}>
-            <TouchableOpacity>
+            {}
+            <TouchableOpacity 
+              onPress={() => 
+                {
+                  console.log(item.id);
+                  toggleLikeFunction(item.id);
+                }
+              }>
               <View style={styles.buttonContainer}>
-                {/*<Text>{item.LikeCount}</Text>*/}
-                <Text>like</Text>
+                <PostText postUID={item.id}/>
               </View>
             </TouchableOpacity>
 

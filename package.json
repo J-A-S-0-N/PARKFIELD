@@ -2,6 +2,7 @@
   "name": "pf",
   "main": "expo-router/entry",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",

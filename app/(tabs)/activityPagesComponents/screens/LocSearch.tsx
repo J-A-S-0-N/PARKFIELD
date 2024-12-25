@@ -7,14 +7,22 @@ map container
 import React from 'react';
 import { useState } from 'react';
 
-import { View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Image, 
-  TextInput, 
-  FlatList, 
-  Dimensions, 
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Entypo from '@expo/vector-icons/Entypo';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+import { LinearGradient } from 'expo-linear-gradient';
+
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  FlatList,
+  Dimensions,
 } from 'react-native';
 
 import { useRouter } from 'expo-router';
@@ -36,7 +44,14 @@ const LocSearch: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const recommendations = [
-    {locationName:"locationName", keyID: "1"},
+    { locationName: "location one", keyID: "1" },
+    { locationName: "two location", keyID: "2" },
+    { locationName: "three location", keyID: "3" },
+    { locationName: "four location", keyID: "4" },
+    { locationName: "location one", keyID: "1" },
+    { locationName: "two location", keyID: "2" },
+    { locationName: "three location", keyID: "3" },
+    { locationName: "four location", keyID: "4" },
   ];
 
   // Filter recommendations based on the search query
@@ -57,45 +72,67 @@ const LocSearch: React.FC = () => {
             source={require('./map.jpeg')}
             style={styles.imageStyle}
           />
+          <LinearGradient
+            colors={['rgba(231, 231, 231, 0)', 'rgba(231, 231, 231, 1)']} // Adjust colors as needed
+            locations={[0.9, 1]} // Start fading at 70% of the height
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.gradient}
+          />
+
         </View>
 
         {/*inputview*/}
-        <View style={styles.inputContainer}>
-          <TextInput 
-            style={styles.inputBox}
-            value={searchQuery}
-            onChangeText={handleSearchChange}
-            placeholder='위치를 입력하시오...'
-          >
-          </TextInput>
+        <View style={styles.inputWTlocContainer}>
+          <View style={styles.innerLocationContainer}>
+            <Text style={styles.innerLocationText}>
+              경기도 평택시
+            </Text>
+          </View>
+          <TouchableOpacity style={styles.inputContainer}>
+            <View style={styles.inputTextIconContainer}>
+              <Entypo name="dot-single" size={26} color="orange" />
+              <Text style={styles.innerButtonStyle}>
+                위치를 입력하기
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
-        {/*recommendation*/}
-        {searchQuery && (
-          <FlatList
-            data={filteredRecommendations}
-            keyExtractor={(item) => item.keyID}
-            renderItem={({ item }) => (
-              <View style={styles.recommendationItem}>
-                <Text style={styles.recommendationText}>{item.locationName}</Text>
-                <TouchableOpacity 
-                  style={{alignItems: "center", justifyContent: "center"}}
-                  onPress={() => {
-                    openModal();
-                  }}
-                >
-                  <View style={styles.innerButton_recommendation}>
-                    <Text style={{color:"#E4E3E4"}}>
-                      확인하기
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                <LocReview isVisible={isModalVisible} onClose={closeModal}/>
-              </View>
-            )}
-            style={styles.recommendationList}
-          />
-        )}    
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity>
+            <View style={styles.buttonCenterContainer}>
+              <FontAwesome6 name="clock-rotate-left" size={24} color="#5E5E5F" />
+              <Text style={styles.buttonTextStyle}>
+                최근방문
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.buttonCenterContainer}>
+              <Ionicons name="golf" size={24} color="#5E5E5F" />
+              <Text style={styles.buttonTextStyle}>
+                근처골프장
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.buttonCenterContainer}>
+              <Entypo name="trophy" size={24} color="#5E5E5F" />
+              <Text style={styles.buttonTextStyle}>
+                인기골프장
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View>
+              <FontAwesome name="star" size={24} color="#5E5E5F" />
+              <Text style={styles.buttonTextStyle}>
+                즐겨찾기
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -108,97 +145,82 @@ const styles = StyleSheet.create({
     backgroundColor: "#EAEAEA",
     //paddingHorizontal: 5,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-  },
-  mapContainer: {
-    //backgroundColor: "black", //temp value change later
-    width: "100%",
-    height: 250
+  inputWTlocContainer: {
+    alignSelf: "center",
+    width: "90%",
+    top: -45,
+    borderRadius: 10,
+    backgroundColor: "#FFFFFF"
   },
   inputContainer: {
-    //top: -70,
-    marginHorizontal: 20,
-    marginTop: 15,
-    marginBottom: 20,
-    paddingHorizontal: 60,
-    backgroundColor: "#B0B0B0",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-start",
-    padding: 20,
+    padding: 15,
+    marginHorizontal: 20,
+    marginTop: 7,
+    marginBottom: 17,
+    paddingHorizontal: 60,
+    backgroundColor: "#EEEEEE",
     borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 5},
-    shadowOpacity: 0.5,
-
   },
   imageContainer: {
     //top: -60,
     width: "120%",
-    marginLeft: -Dimensions.get("window").width* 0.1,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 5},
-    shadowOpacity: 0.5,
+    marginLeft: -Dimensions.get("window").width * 0.1,
   },
-
-
-
-
-
-  recommendationList: {
-    backgroundColor: "#D7D7D7",
-    borderRadius: 5,
-    marginBottom:10,
-    //top: -75,
+  buttonsContainer: {
+    top: -20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 50,
   },
-  recommendationItem: {
+  innerLocationContainer: {
+    marginLeft: 35,
+    alignSelf: "flex-start"
+  },
+  inputTextIconContainer:{
+    left: -40,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    padding: 15,
-    paddingHorizontal: 24,
-    borderBottomWidth: 2,
-    borderBottomColor: '#ddd',
   },
-  recommendationText: {
-    top: -10,
-    fontSize: 16,
-    alignSelf: "flex-end",
-    textAlign: "center",
-    color: '#333',
-  },
-  innerButton_recommendation: {
-    alignItems: "center", 
+  buttonCenterContainer: {
     justifyContent: "center",
-    backgroundColor: "#525251",
-    width: 78,
-    height: 37,
-    borderRadius: 3,
-
+    alignItems: "center",
   },
 
 
 
-
+  buttonTextStyle: {
+    color: "#828282",
+    fontSize: 12, // Adjust font size for readability
+    marginTop: 10,
+  },
+  innerLocationText:{
+    textAlign: "left",
+    marginTop: 14,
+    color:"#019780",
+    fontWeight: "900",
+    fontSize: 17,
+    alignSelf: "center",
+  },
   imageStyle: {
     width: "100%",
-    height: 400,
+    height: 600,
   },
-  locationTEXT: {
-    fontSize:19,
-    fontFamily: "bold"
-  },
-  inputBox:{
-    borderWidth: 1,
-    borderColor: "#B0B0B0",
+  gradient: {
+    position: 'absolute',
+    bottom: 0,
     width: '100%',
-    borderRadius: 5,
+    height: '100%', // Ensure the gradient covers the entire image
   },
-
+  innerButtonStyle: {
+    color:"black",
+    fontSize: 20,
+    lineHeight: 32,
+    textAlign: "left",
+    flex: 1, // Make the text component take up all available horizontal space
+  }
 });
 
 export default LocSearch;

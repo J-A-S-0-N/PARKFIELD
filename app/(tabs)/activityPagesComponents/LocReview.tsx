@@ -15,7 +15,7 @@ import { useSearchParams } from 'expo-router/build/hooks';
 import { useRouter } from 'expo-router/build/hooks';
 
 
-const {WINwidth, WINheight} = Dimensions.get('window');
+//const {WINwidth, WINheight} = Dimensions.get('window');
 
 type pararmVariable = {
   locationName: string,

@@ -1,22 +1,18 @@
-import React from 'react';
-import { Stack } from 'expo-router';
+import React from "react";
+import { Stack } from "expo-router";
 
-export default function layout() {
+export default function Layout() {
   return (
-    <Stack>
-      <Stack.Screen 
-        name="screens"
-        options={{ headerShown: false }}
-       />
-      {/*
-      <Stack.Screen 
-        name="screens/LocReview"
-        options={{ 
-          headerShown: false,
-          //headerTitle: "",
-        }}
-       />
-      */}
+    <Stack 
+      initialRouteName="LocSearch"
+      screenOptions={{ headerShown: false}}>
+        <Stack.Screen
+          name="innerScreenComponents/searchLocationPage"
+          options={{
+            headerShown: false, 
+          }}
+        />
     </Stack>
   );
 }
+

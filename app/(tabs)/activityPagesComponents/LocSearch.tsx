@@ -76,7 +76,9 @@ const LocSearch: React.FC = () => {
           <TouchableOpacity
             style={styles.inputContainer}
             onPress={() =>
-              router.push("./innerScreenComponents/searchLocationPage")
+              router.push(
+                "./activityPagesComponents/innerScreenComponents_LocSearch/searchLocationPage",
+              )
             }
           >
             <View style={styles.inputTextIconContainer}>
@@ -90,7 +92,7 @@ const LocSearch: React.FC = () => {
           <TouchableOpacity
             onPress={() =>
               router.push(
-                "/(tabs)/activityPagesComponents/innerScreenComponents/recentlyVisitedPage",
+                "./activityPagesComponents/innerScreenComponents_LocSearch/recentlyVisitedPage",
               )
             }
           >
@@ -106,7 +108,7 @@ const LocSearch: React.FC = () => {
           <TouchableOpacity
             onPress={() => {
               router.push(
-                "/(tabs)/activityPagesComponents/innerScreenComponents/nearLocationsPage",
+                "./activityPagesComponents/innerScreenComponents_LocSearch/nearLocationsPage",
               );
             }}
           >
@@ -118,7 +120,7 @@ const LocSearch: React.FC = () => {
           <TouchableOpacity
             onPress={() => {
               router.push(
-                "/(tabs)/activityPagesComponents/innerScreenComponents/rankedLocationPage",
+                "./activityPagesComponents/innerScreenComponents_LocSearch/rankedLocationPage",
               );
             }}
           >
@@ -130,7 +132,7 @@ const LocSearch: React.FC = () => {
           <TouchableOpacity
             onPress={() => {
               router.push(
-                "/(tabs)/activityPagesComponents/innerScreenComponents/FavoritesLocationPage",
+                "./activityPagesComponents/innerScreenComponents_LocSearch/FavoritesLocationPage",
               );
             }}
           >

@@ -66,7 +66,7 @@ export default function innerLocationSelection() {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
-      setFilteredData(data); // Reset to all data if query is empty
+      setFilteredData(data);
     } else {
       setFilteredData(
         data.filter((item) =>

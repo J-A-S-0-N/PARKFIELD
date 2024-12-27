@@ -1,18 +1,12 @@
-/*
+import React from "react";
+import { useState } from "react";
 
-subcomponents to impliment:
-map container
+import Ionicons from "@expo/vector-icons/Ionicons";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import Entypo from "@expo/vector-icons/Entypo";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-*/
-import React from 'react';
-import { useState } from 'react';
-
-import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Entypo from '@expo/vector-icons/Entypo';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 
 import {
   View,
@@ -23,14 +17,11 @@ import {
   TextInput,
   FlatList,
   Dimensions,
-} from 'react-native';
+} from "react-native";
 
-import { useRouter } from 'expo-router';
-//import { LinearGradient } from "expo-linear-gradient"
-//import { dismiss } from 'expo-router/build/global-state/routing';
-//import { useSafeAreaFrame } from 'react-native-safe-area-context';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import LocReview from './LocReview';
+import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import LocReview from "./LocReview";
 
 const LocSearch: React.FC = () => {
   const router = useRouter();
@@ -41,8 +32,7 @@ const LocSearch: React.FC = () => {
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
-
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const recommendations = [
     { locationName: "location one", keyID: "1" },
     { locationName: "two location", keyID: "2" },
@@ -56,7 +46,7 @@ const LocSearch: React.FC = () => {
 
   // Filter recommendations based on the search query
   const filteredRecommendations = recommendations.filter((item) =>
-    item.locationName.toLowerCase().includes(searchQuery.toLowerCase())
+    item.locationName.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleSearchChange = (text: string) => {
@@ -68,68 +58,85 @@ const LocSearch: React.FC = () => {
       <View style={styles.container}>
         {/* map view*/}
         <View style={styles.imageContainer}>
-          <Image
-            source={require('./map.jpeg')}
-            style={styles.imageStyle}
-          />
+          <Image source={require("./map.jpeg")} style={styles.imageStyle} />
           <LinearGradient
-            colors={['rgba(231, 231, 231, 0)', 'rgba(231, 231, 231, 1)']} // Adjust colors as needed
-            locations={[0.9, 1]} // Start fading at 70% of the height
+            colors={["rgba(231, 231, 231, 0)", "rgba(231, 231, 231, 1)"]}
+            locations={[0.9, 1]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={styles.gradient}
           />
-
         </View>
 
         {/*inputview*/}
         <View style={styles.inputWTlocContainer}>
           <View style={styles.innerLocationContainer}>
-            <Text style={styles.innerLocationText}>
-              경기도 평택시
-            </Text>
+            <Text style={styles.innerLocationText}>경기도 평택시</Text>
           </View>
-          <TouchableOpacity style={styles.inputContainer}>
+          <TouchableOpacity
+            style={styles.inputContainer}
+            onPress={() =>
+              router.push("./innerScreenComponents/searchLocationPage")
+            }
+          >
             <View style={styles.inputTextIconContainer}>
               <Entypo name="dot-single" size={26} color="orange" />
-              <Text style={styles.innerButtonStyle}>
-                위치를 입력하기
-              </Text>
+              <Text style={styles.innerButtonStyle}>위치를 입력하기</Text>
             </View>
           </TouchableOpacity>
         </View>
 
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              router.push(
+                "/(tabs)/activityPagesComponents/innerScreenComponents/recentlyVisitedPage",
+              )
+            }
+          >
             <View style={styles.buttonCenterContainer}>
-              <FontAwesome6 name="clock-rotate-left" size={24} color="#5E5E5F" />
-              <Text style={styles.buttonTextStyle}>
-                최근방문
-              </Text>
+              <FontAwesome6
+                name="clock-rotate-left"
+                size={24}
+                color="#5E5E5F"
+              />
+              <Text style={styles.buttonTextStyle}>최근방문</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              router.push(
+                "/(tabs)/activityPagesComponents/innerScreenComponents/nearLocationsPage",
+              );
+            }}
+          >
             <View style={styles.buttonCenterContainer}>
               <Ionicons name="golf" size={24} color="#5E5E5F" />
-              <Text style={styles.buttonTextStyle}>
-                근처골프장
-              </Text>
+              <Text style={styles.buttonTextStyle}>근처골프장</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              router.push(
+                "/(tabs)/activityPagesComponents/innerScreenComponents/rankedLocationPage",
+              );
+            }}
+          >
             <View style={styles.buttonCenterContainer}>
               <Entypo name="trophy" size={24} color="#5E5E5F" />
-              <Text style={styles.buttonTextStyle}>
-                인기골프장
-              </Text>
+              <Text style={styles.buttonTextStyle}>인기골프장</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              router.push(
+                "/(tabs)/activityPagesComponents/innerScreenComponents/FavoritesLocationPage",
+              );
+            }}
+          >
             <View>
               <FontAwesome name="star" size={24} color="#5E5E5F" />
-              <Text style={styles.buttonTextStyle}>
-                즐겨찾기
-              </Text>
+              <Text style={styles.buttonTextStyle}>즐겨찾기</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -150,7 +157,7 @@ const styles = StyleSheet.create({
     width: "90%",
     top: -45,
     borderRadius: 10,
-    backgroundColor: "#FFFFFF"
+    backgroundColor: "#FFFFFF",
   },
   inputContainer: {
     flexDirection: "row",
@@ -177,9 +184,9 @@ const styles = StyleSheet.create({
   },
   innerLocationContainer: {
     marginLeft: 35,
-    alignSelf: "flex-start"
+    alignSelf: "flex-start",
   },
-  inputTextIconContainer:{
+  inputTextIconContainer: {
     left: -40,
     flexDirection: "row",
     alignItems: "center",
@@ -189,17 +196,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-
-
   buttonTextStyle: {
     color: "#828282",
-    fontSize: 12, // Adjust font size for readability
+    fontSize: 12,
     marginTop: 10,
   },
-  innerLocationText:{
+  innerLocationText: {
     textAlign: "left",
     marginTop: 14,
-    color:"#019780",
+    color: "#019780",
     fontWeight: "900",
     fontSize: 17,
     alignSelf: "center",
@@ -209,18 +214,18 @@ const styles = StyleSheet.create({
     height: 600,
   },
   gradient: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    width: '100%',
-    height: '100%', // Ensure the gradient covers the entire image
+    width: "100%",
+    height: "100%",
   },
   innerButtonStyle: {
-    color:"black",
+    color: "black",
     fontSize: 20,
     lineHeight: 32,
     textAlign: "left",
-    flex: 1, // Make the text component take up all available horizontal space
-  }
+    flex: 1,
+  },
 });
 
 export default LocSearch;

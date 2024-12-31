@@ -77,7 +77,7 @@ const LocSearch: React.FC = () => {
             style={styles.inputContainer}
             onPress={() =>
               router.push(
-                "./activityPagesComponents/innerScreenComponents_LocSearch/searchLocationPage",
+                "/(tabs)/activityPagesComponents/innerScreenComponents_LocSearch/searchLocationPage",
               )
             }
           >

@@ -4,12 +4,12 @@ import { Text, View } from "react-native";
 import { db } from "@/services/firebaseConfig";
 
 export const PostText = ({ postUID }: { postUID: string }) => {
-  const [textStyle, setTextStyle] = useState<JSX.Element | null>(null); 
-  const userId = "J4S0N"; 
+  const [textStyle, setTextStyle] = useState<JSX.Element | null>(null);
+  const userId = "J4S0N";
   useEffect(() => {
-    if (!postUID){
-        console.log("error: invalid likeStyleFunction");
-        return;
+    if (!postUID) {
+      console.log("error: invalid likeStyleFunction");
+      return;
     }
     const fetchPostData = async () => {
       try {
@@ -18,7 +18,7 @@ export const PostText = ({ postUID }: { postUID: string }) => {
 
         if (!postSnapshot.exists()) {
           console.warn("Post does not exist");
-          return; 
+          return;
         }
 
         const post = postSnapshot.data();
@@ -26,14 +26,17 @@ export const PostText = ({ postUID }: { postUID: string }) => {
 
         if (likeUser.includes(userId)) {
           setTextStyle(
-            <Text style={{ 
-                color: "#91A233", 
-            }}>like</Text>
+            <Text
+              style={{
+                color: "#FF8001",
+                fontWeight: "700",
+              }}
+            >
+              like
+            </Text>,
           );
         } else {
-          setTextStyle(
-            <Text style={{ color: "black" }}>like</Text>
-          );
+          setTextStyle(<Text style={{ color: "black" }}>like</Text>);
         }
       } catch (error) {
         console.log("Error fetching post data:", error);

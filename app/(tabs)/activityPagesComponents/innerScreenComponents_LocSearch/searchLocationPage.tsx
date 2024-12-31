@@ -1,4 +1,17 @@
-import React from "react";
+// functioanlity idea
+// 1:
+// instead of fetching all locations from  firebase
+// just fetch one more screen at a time and constantly have two pages ready
+// will minimize unncessarty fetches -> lower clost
+// 2:
+
+// TODO:
+// -
+// FIXME:
+// - FlatList not shown when there isnt any input
+// - Two children when the same child issue $38 -> duplicated 38
+
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,108 +20,166 @@ import {
   TouchableOpacity,
   StatusBar,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
-import { useState } from "react";
-import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useRouter } from "expo-router";
+import {
+  collection,
+  getDocs,
+  query,
+  limit,
+  startAfter,
+  QueryDocumentSnapshot,
+  DocumentData,
+} from "firebase/firestore";
+
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+
+//import { firestore } from "../firebaseConfig"; // Adjust the path to your Firebase config file
+import { db } from "@/services/firebaseConfig.js";
 
 type DataItem = {
   id: string;
-  name: string;
-  distance: string;
+  distance: number;
+  holes: number;
+  locationName: string;
 };
 
-export default function innerLocationSelection() {
+export default function InnerLocationSelection() {
   const router = useRouter();
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [data, setData] = useState<DataItem[]>([]);
   const [filteredData, setFilteredData] = useState<DataItem[]>([]);
 
-  const data: DataItem[] = [
-    { id: "1", name: "정발파크골프장", distance: "2.5 km" },
-    { id: "2", name: "함안파크골프장", distance: "3.1 km" },
-    { id: "3", name: "영양군 파크골프장", distance: "5.0 km" },
-    { id: "4", name: "다사파크골프장", distance: "1.2 km" },
-    { id: "5", name: "유등파크골프장", distance: "4.3 km" },
-    { id: "6", name: "삼락다이나믹파크골프장", distance: "6.7 km" },
-    { id: "7", name: "삼락18파크골프장", distance: "7.2 km" },
-    { id: "8", name: "화명파크골프장", distance: "2.9 km" },
-    { id: "9", name: "대저생태공원파크골프장", distance: "8.4 km" },
-    { id: "10", name: "기장파크골프장", distance: "3.8 km" },
-    { id: "11", name: "사암파크골프장", distance: "5.5 km" },
-    { id: "12", name: "삼락9&9파크골프장", distance: "4.0 km" },
-    { id: "13", name: "범밤파크골프장", distance: "2.3 km" },
-    { id: "14", name: "강변파크골프장", distance: "6.1 km" },
-    { id: "15", name: "오륜파크골프장", distance: "3.4 km" },
-    { id: "16", name: "신호파크골프장", distance: "7.8 km" },
-    { id: "17", name: "중랑천 파크골프장", distance: "4.2 km" },
-    { id: "18", name: "서남물재생센터공원파크골프장", distance: "8.9 km" },
-    { id: "19", name: "한강파크골프장", distance: "3.0 km" },
-    { id: "20", name: "잠실파크골프장", distance: "2.7 km" },
-    { id: "21", name: "월드컵파크골프장", distance: "5.1 km" },
-    { id: "22", name: "안양천파크골프장", distance: "4.9 km" },
-    { id: "23", name: "구로 안양천 9홀 파크골프장", distance: "3.3 km" },
-    { id: "24", name: "구로 안양천 18홀 파크골프장", distance: "5.4 km" },
-    { id: "25", name: "강동파크골프장", distance: "6.0 km" },
-    { id: "26", name: "금천구 한내천파크골프장", distance: "7.1 km" },
-    { id: "27", name: "양평누리파크골프장", distance: "2.8 km" },
-    { id: "28", name: "동대문구중량천 파크골프장", distance: "4.6 km" },
-    { id: "29", name: "강남탄천그린파크골프장", distance: "3.2 km" },
-    { id: "30", name: "오가낭파크골프장", distance: "5.3 km" },
-    { id: "31", name: "한솔파크골프장", distance: "6.4 km" },
-    { id: "32", name: "조천파크골프장", distance: "7.6 km" },
-  ];
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleFavoriteLocation = (locationName: string) => {
-    console.log("need implimentation");
+  const [lastVisible, setLastVisible] =
+    useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const locationsRef = collection(db, "locations");
+
+  // Initial fetch
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const q = query(locationsRef, limit(10));
+      const querySnapshot = await getDocs(q);
+      const fetchedData: DataItem[] = [];
+      querySnapshot.forEach((doc) => {
+        fetchedData.push({ id: doc.id, ...doc.data() } as DataItem);
+      });
+      setData(fetchedData);
+      setFilteredData(fetchedData);
+      if (!querySnapshot.empty) {
+        setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+      }
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Load more data
+  const loadMoreData = async () => {
+    if (!lastVisible || isFetchingMore || !hasMore) return;
+
+    setIsFetchingMore(true);
+    try {
+      const q = query(locationsRef, startAfter(lastVisible), limit(10));
+      const querySnapshot = await getDocs(q);
+      const fetchedData: DataItem[] = [];
+      querySnapshot.forEach((doc) => {
+        fetchedData.push({ id: doc.id, ...doc.data() } as DataItem);
+      });
+
+      setData((prevData) => [...prevData, ...fetchedData]);
+
+      if (searchQuery) {
+        const filteredFetchData = fetchedData.filter((item) =>
+          item.locationName.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+        setFilteredData((prevData) => [...prevData, ...filteredFetchData]);
+      } else {
+        setFilteredData((prevData) => [...prevData, ...fetchedData]);
+      }
+
+      if (!querySnapshot.empty) {
+        setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error fetching more data: ", error);
+    } finally {
+      setIsFetchingMore(false);
+    }
+  };
+
+  // Search filter
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query === "") {
-      setFilteredData(data);
-    } else {
-      setFilteredData(
-        data.filter((item) =>
-          item.name.toLowerCase().includes(query.toLowerCase()),
-        ),
+    const lowercasedQuery = query.toLowerCase();
+
+    setFilteredData(
+      data.filter((item) =>
+        item.locationName.toLowerCase().includes(lowercasedQuery),
+      ),
+    );
+  };
+
+  // Rendering each item
+  const renderingFunction = ({ item }: { item: DataItem }) => (
+    <View style={{ flexDirection: "column" }}>
+      <View style={{ marginVertical: 13 }}>
+        <TouchableOpacity>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <View style={styles.itemContainer}>
+              <Text>{item.locationName}</Text>
+            </View>
+            <View style={styles.favoriteContainer}>
+              <TouchableOpacity style={{ width: 20, height: 20 }}>
+                <FontAwesome name="star" size={20} color="#CECFCC" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Text style={{ fontSize: 12, alignSelf: "flex-end" }}>
+            {item.distance} KM
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {/* seperator */}
+      <View
+        style={{
+          height: 2,
+          backgroundColor: "#DFDFDF",
+          marginTop: 2,
+          borderRadius: 2,
+        }}
+      ></View>
+    </View>
+  );
+
+  // Footer loader
+  const renderFooter = () => {
+    if (isFetchingMore) {
+      return (
+        <View style={{ padding: 20, alignItems: "center" }}>
+          <ActivityIndicator />
+        </View>
       );
     }
   };
 
-  const renderingFunction = ({ item }: { item: DataItem }) => {
-    return (
-      <View style={{ flexDirection: "column" }}>
-        <View style={{ flex: 8 }}>
-          <TouchableOpacity>
-            <View style={styles.itemContainer}>
-              <Text>{item.name}</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        //
-        <View style={{ flex: 2, flexDirection: "row" }}>
-          <Text style={{ fontSize: 12, alignSelf: "flex-end" }}>
-            {item.distance}
-          </Text>
-          <TouchableOpacity onPress={() => {}}>
-            <View>
-              <Text>replace with icon</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        st
-        {/* seperator */}
-        <View
-          style={{
-            height: 2,
-            backgroundColor: "#DFDFDF",
-            borderRadius: 2,
-          }}
-        ></View>
-      </View>
-    );
-  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -130,12 +201,21 @@ export default function innerLocationSelection() {
       </View>
       {/* Body */}
       <View style={styles.bodyContainer}>
-        <FlatList
-          data={filteredData}
-          renderItem={renderingFunction}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContainer}
-        />
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator />
+          </View>
+        ) : (
+          <FlatList
+            data={filteredData}
+            renderItem={renderingFunction}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContainer}
+            onEndReached={loadMoreData}
+            onEndReachedThreshold={0.1}
+            ListFooterComponent={renderFooter}
+          />
+        )}
       </View>
     </View>
   );
@@ -155,19 +235,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flexDirection: "column",
   },
+  locationNameContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  favoriteContainer: {
+    /*
+    width: 20,
+    height: 20,
+    //marginTop: -5,
+    */
+    //paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   bodyContainer: {
+    flex: 1,
     marginTop: 5,
     borderRadius: 5,
     alignSelf: "center",
     width: "95%",
     backgroundColor: "#f0f0f0",
-  },
-  itemContainer: {
-    backgroundColor: "#f0f0f0",
-    paddingVertical: 25,
-    paddingHorizontal: 15,
-    //marginVertical: 5,
-    //borderRadius: 5,
   },
   inputContainer: {
     marginHorizontal: 20,
@@ -181,5 +273,18 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     backgroundColor: "#E1E1E1",
     width: "100%",
+  },
+  itemContainer: {
+    backgroundColor: "#f0f0f0",
+    paddingVertical: 25,
+    paddingHorizontal: 15,
+  },
+  itemText: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  itemSubText: {
+    fontSize: 14,
+    color: "#666",
   },
 });

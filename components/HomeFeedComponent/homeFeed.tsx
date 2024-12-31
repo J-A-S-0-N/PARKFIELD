@@ -246,6 +246,7 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
       setlikeColor("black");
     } else {
       setlikeFontFamily("800");
+      //setlikeColor("#5BB7FF");
       setlikeColor("#5BB7FF");
     }
 
@@ -353,7 +354,7 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
           <View
             style={[styles.likecommentButtonContainer, styles.childPadding]}
           >
-            {}
+            {/*{} dont know why i added this */}
             <TouchableOpacity
               onPress={() => {
                 console.log(item.id);
@@ -364,7 +365,6 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
                 <PostText postUID={item.id} />
               </View>
             </TouchableOpacity>
-
             <View
               style={{
                 height: "100%",
@@ -373,7 +373,6 @@ const HomeFeed: React.FC<HomeProp> = ({ router }) => {
                 backgroundColor: "#E4E4E4",
               }}
             />
-
             <TouchableOpacity
               onPress={() =>
                 router.push({

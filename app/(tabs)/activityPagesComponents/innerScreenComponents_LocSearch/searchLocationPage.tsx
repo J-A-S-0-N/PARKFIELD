@@ -4,7 +4,6 @@
 // just fetch one more screen at a time and constantly have two pages ready
 // will minimize unncessarty fetches -> lower clost
 // 2:
-
 // TODO:
 // -
 // FIXME:

@@ -8,7 +8,7 @@
 // TODO:
 // -
 // FIXME:
-// - FlatList not shown when there isnt any input
+// - FlatList not shown when there isnt any input []
 // - Two children when the same child issue $38 -> duplicated 38
 
 import React, { useState, useEffect } from "react";
@@ -132,6 +132,18 @@ export default function InnerLocationSelection() {
     );
   };
 
+  // toggle / write favorite location
+  const toggle2WriteFavorite = async (query: string) => {
+    // if db.match(query)
+    //  change the color of the star
+    //  remove the query from the db
+    //  db.close
+    // else
+    //  change the color of the star
+    //  add the query onto the db
+    //  db.close
+  };
+
   // Rendering each item
   const renderingFunction = ({ item }: { item: DataItem }) => (
     <View style={{ flexDirection: "column" }}>
@@ -144,7 +156,11 @@ export default function InnerLocationSelection() {
               <Text>{item.locationName}</Text>
             </View>
             <View style={styles.favoriteContainer}>
-              <TouchableOpacity style={{ width: 20, height: 20 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  toggle2WriteFavorite(item.locationName);
+                }}
+                style={{ width: 20, height: 20 }}>
                 <FontAwesome name="star" size={20} color="#CECFCC" />
               </TouchableOpacity>
             </View>
